@@ -1,0 +1,70 @@
+name: Check directory
+
+on:
+  push:
+    branches-ignore:
+    - 'main'
+
+jobs:
+  check:
+    name: check-code
+    outputs:
+      prod: ${{ steps.check_files.outputs.prod }}
+      dev: ${{ steps.check_files.outputs.dev }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: check files
+        id: check_files
+        run: |
+          echo "List of changed files"
+          git diff --name-only HEAD^ HEAD
+
+          echo "Check paths of changed files"
+          list=$(git diff --name-only HEAD^ HEAD)
+          [[ "$list" =~ ^"dev/"* ]] && echo "::set-output name=dev::true" || echo "::set-output name=dev::false"
+          [[ "$list" =~ "prod/"* ]] && echo "::set-output name=prod::true" || echo "::set-output name=prod::false"
+        
+  dev:
+      name: Dev Terraform
+      needs: check
+      if: needs.check.outputs.dev == 'true'
+      runs-on: ubuntu-latest
+
+      # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+      defaults:
+        run:
+          shell: bash
+          working-directory: ./dev
+
+      steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Dev Secret
+        run: echo "${{ secrets.dev }}" | base64
+
+  prod:
+      name: Prod Terraform
+      needs: check
+      if: needs.check.outputs.prod == 'true'
+      runs-on: ubuntu-latest
+
+      # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+      defaults:
+        run:
+          shell: bash
+          working-directory: ./prod
+
+      steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Prod Secret
+        run: echo "${{ secrets.prod }}" | base64
