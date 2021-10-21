@@ -32,6 +32,7 @@ jobs:
   dev:
       name: Dev Terraform
       needs: check
+      environment: Development
       if: needs.check.outputs.dev == 'true'
       runs-on: ubuntu-latest
 
@@ -52,6 +53,7 @@ jobs:
   prod:
       name: Prod Terraform
       needs: check
+      environment: Production
       if: needs.check.outputs.prod == 'true'
       runs-on: ubuntu-latest
 
