@@ -14,3 +14,7 @@ provider "aws" {
 resource "aws_s3_bucket" "dev-bucket" {
     bucket = "demo-dev-bucket-extraordinaire"
 }
+
+resource "aws_s3_bucket" "dev-bucket-2" {
+    bucket = "demo-dev-bucket-extraordinaire-2"
+}
