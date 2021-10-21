@@ -12,5 +12,5 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "prod-bucket" {
-    bucket = "demo-prod-bucket-extraordinaire"
+    bucket = "demo-prod-bucket-extraordinairse"
 }
