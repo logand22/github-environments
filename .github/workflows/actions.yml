@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Use Dev Secret
-        run: echo "${{ secrets.dev }}" | base64
+        run: echo "${{ secrets.DEV }}" | base64
 
   prod:
       name: Prod Terraform
@@ -67,4 +67,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Use Prod Secret
-        run: echo "${{ secrets.prod }}" | base64
+        run: echo "${{ secrets.PROD }}" | base64
